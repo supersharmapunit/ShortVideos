@@ -6,7 +6,7 @@ function App() {
   return (
     <div>
       <AuthProvider>
-        <Signup/>
+        <Signup />
       </AuthProvider>
     </div>
   );
