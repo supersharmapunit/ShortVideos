@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { AuthContext } from '../Context/AuthProvider';
-import { storage } from './firebase'
+import { database, storage } from './firebase'
 import { ref, getDownloadURL, uploadBytesResumable } from '@firebase/storage'
+import { addDoc, serverTimestamp } from 'firebase/firestore';
 
 function Signup() {
     const [name, setName] = useState('');
@@ -23,11 +24,13 @@ function Signup() {
         let uid = signupResponse.user.uid;
         setLoading(false);
     
-
-        const storageRef = ref(storage, `./Users/${uid}/ProfileImage/`);
-        const uploadTask = uploadBytesResumable(storageRef, pictureFile);
+        console.log(file);
+        if(file == null) return;
+        console.log(file);
+        const storageRef = ref(storage, `/Users/${uid}/ProfileImage/`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
         uploadTask.on("state_changed", (snapshot)=>{
-            console.log(Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+            console.log(Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100));
         }, (err)=>{
             setError(err);
             setTimeout(() => {
@@ -36,7 +39,16 @@ function Signup() {
             setLoading(false);
         },async ()=>{
             let uploadedFileURL = await getDownloadURL(uploadTask.snapshot.ref);
-            console.log(uploadedFileURL);
+            const docData = {
+                userId : uid,
+                username: name,
+                email : email,
+                createdAt : serverTimestamp(),
+                postId :[],
+                profileURL : uploadedFileURL
+            }
+            let docResponse = await addDoc(database.user, docData);
+            console.log(docResponse.id);
         })
 
 
