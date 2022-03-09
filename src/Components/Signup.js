@@ -1,8 +1,9 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../Context/AuthProvider';
 import { database, storage } from './firebase'
 import { ref, getDownloadURL, uploadBytesResumable } from '@firebase/storage'
 import { addDoc, serverTimestamp } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
 
 function Signup() {
     const [name, setName] = useState('');
@@ -11,8 +12,9 @@ function Signup() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [file, setFile] = useState(null);
-    let { signup } = useContext(AuthContext);
+    const {signup,currentUser} =useContext(AuthContext);
     let pictureFile;
+    const navigate = useNavigate();
 
 
     let handleSubmit = async (e) => {
@@ -50,7 +52,9 @@ function Signup() {
             let docResponse = await addDoc(database.user, docData);
             console.log(docResponse.id);
         })
-
+        setLoading(false);
+        console.log('User Signed up');
+        navigate('/');
 
     }
 
@@ -62,6 +66,12 @@ function Signup() {
             setFile(pictureFile);
         }
     }
+    useEffect(()=>{
+        if(currentUser)
+        {
+          navigate('/')
+        }
+      },[])
 
     return (
         <div>

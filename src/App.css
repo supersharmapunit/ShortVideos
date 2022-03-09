@@ -16,6 +16,9 @@
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
+}
+.videos{
+  margin-top: 5%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -23,7 +26,6 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
-
 .App-link {
   color: #61dafb;
 }
@@ -36,3 +38,11 @@
     transform: rotate(360deg);
   }
 }
+.video-styles{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 100%;
+  width: 30%;
+  height: 80vh;
+} 
